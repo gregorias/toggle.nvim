@@ -51,11 +51,12 @@ Install the plugin with your preferred package manager, such as [Lazy]:
 
 All default options use `vim.notify` for state changes.
 
-| Option       | Keymap | Description                             |
-| :--          | :--:   | :--                                     |
-| conceallevel | `cl`   | 0–3 slider with 0-sticky toggle         |
+| Option       | Keymap | Description                            |
+| :--          | :--:   | :--                                    |
+| conceallevel | `cl`   | 0–3 slider with 0-sticky toggle        |
 | diff         | `d`    | on-off switch for `diffthis`/`diffoff` |
-| wrap         | `w`    | on-off switch for `wrap` |
+| diff all     | `D`    | option for diffing all visible windows |
+| wrap         | `w`    | on-off switch for `wrap`               |
 
 ## 🙏 Acknowledgments
 

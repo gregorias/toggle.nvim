@@ -164,7 +164,7 @@ M.SliderOption = function(slider_option)
 end
 
 ---@class NotifyOnSetParams
----@field notify? fun(message: string, level: number) A function that sends a notification. Defaults to vim.notify.
+---@field notify? fun(message: string, level: number, opts: any?) A function that sends a notification. Defaults to vim.notify.
 
 --- An option decorator that notifies on option toggle actions.
 ---
@@ -172,12 +172,20 @@ end
 ---@param params? NotifyOnSetParams Optional parameters for the notification.
 ---@return Option
 M.NotifyOnSetOption = function(option, params)
-  local notify = (params and params.notify) or vim.notify
+  local notify = (params ~= nil and params.notify)
+    or function(...)
+      -- It’s important that we bind vim.notify dynamically, because it’s often monkey-patched.
+      vim.notify(...)
+    end
   local wrap = function(f)
     return function()
       local new_state = f()
-      if new_state then
-        notify("Set " .. option.name .. " to " .. vim.inspect(new_state), vim.log.levels.INFO)
+      if new_state ~= nil then
+        notify(
+          "Set " .. option.name .. " to " .. vim.inspect(new_state),
+          vim.log.levels.INFO,
+          { title = "Toggle.nvim" }
+        )
       end
       return new_state
     end
