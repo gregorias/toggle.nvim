@@ -10,8 +10,21 @@
   </p>
 </div>
 
-Toggle is a modern, extensible Neovim plugin for toggling options ala
-[unimpaired.vim][unimpaired] written in Lua.
+Toggle is a modern, extensible Neovim Lua plugin for toggling options ala
+[unimpaired.vim][unimpaired].
+
+Do you have togglable options that you ocassionally want to change during your
+Neovim session? For example:
+
+- You usually have `nowrap` on, but sometimes you need to turn on wrapping for
+  those long lines to see what’s going on.
+- You want to quickly diff two buffers by setting `diffthis` on them.
+- Completion turns out to be useless for the current buffer, so you want to
+  quickly disable it.
+- You usually work with `conceallevel`, but you need to decrease it from time
+  to time to double check your Markdown.
+
+Then Toggle is a plugin for you!
 
 ## ⚡️ Requirements
 

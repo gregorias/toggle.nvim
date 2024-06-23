@@ -1,13 +1,9 @@
+local option_m = require("toggle.option")
+
 ---@class Config
 ---@field register_keymaps fun(table)?: Which-key compatible function for registering keymaps.
 local global_config = nil
 local setup_done = false
-
----@class Option
----@field name string A human-readable identifier for this option.
----@field keymap string
----@field get_state fun(): boolean Returns whether the option is on (true) or off (false).
----@field set_state fun(state: boolean)
 
 --- A repository of all to-be-registered options.
 ---@type table<string, Option>
@@ -24,12 +20,15 @@ local DISABLE_OPTION_PREFIX = "]o"
 ---@class ToggleModule
 local M = {}
 
+M.option = option_m
+
 ---Registers a new option.
 ---
+---@param keymap string
 ---@param option Option
-function M.register(option)
+function M.register(keymap, option)
   if not setup_done then
-    options_by_keymap_todo[option.keymap] = option
+    options_by_keymap_todo[keymap] = option
     return nil
   end
 
@@ -37,31 +36,31 @@ function M.register(option)
     vim.notify("Option " .. option.name .. " already registered.", vim.log.levels.ERROR)
     return nil
   end
-  options_by_keymap[option.keymap] = option
+  options_by_keymap[keymap] = option
 
   global_config.register_keymaps({
     ["yo"] = {
-      [option.keymap] = {
+      [keymap] = {
         function()
-          option.set_state(not option.get_state())
+          option.toggle_state()
         end,
         "Toggle " .. option.name,
       },
     },
     ["[o"] = {
-      [option.keymap] = {
+      [keymap] = {
         function()
-          option.set_state(true)
+          option.set_prev_state()
         end,
-        "Enable " .. option.name,
+        "Go to previous (off) state of " .. option.name,
       },
     },
     ["]o"] = {
-      [option.keymap] = {
+      [keymap] = {
         function()
-          option.set_state(false)
+          option.set_next_state()
         end,
-        "Disable " .. option.name,
+        "Go to next (on) state of " .. option.name,
       },
     },
   })
@@ -86,8 +85,8 @@ M.setup = function(config)
     },
   })
 
-  for _, option in pairs(options_by_keymap_todo) do
-    M.register(option)
+  for keymap, option in pairs(options_by_keymap_todo) do
+    M.register(keymap, option)
   end
   options_by_keymap_todo = {}
 end
