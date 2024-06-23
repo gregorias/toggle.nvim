@@ -1,0 +1,42 @@
+---
+base: lua51
+
+globals:
+  vim:
+    any: true
+  assert:
+    args:
+      - type: bool
+      - type: string
+        required: false
+  assert.has.errors:
+    args:
+      - type: function
+  assert.are.same:
+    args:
+      - type: any
+      - type: any
+  assert.are_not.same:
+    args:
+      - type: any
+      - type: any
+  assert.is.False:
+    args:
+      - type: bool
+  assert.is.True:
+    args:
+      - type: bool
+  after_each:
+    args:
+      - type: function
+  before_each:
+    args:
+      - type: function
+  describe:
+    args:
+      - type: string
+      - type: function
+  it:
+    args:
+      - type: string
+      - type: function
