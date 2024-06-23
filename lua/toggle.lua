@@ -1,7 +1,12 @@
+---@class ToggleModule
+local M = {}
+
 local option_m = require("toggle.option")
 
 ---@class Config
 ---@field register_keymaps fun(table)?: Which-key compatible function for registering keymaps.
+---@field options_by_keymap table<string, Option>?: A table of options to register keyed by their keymap.
+---                                                 If nil, the default options will be used.
 local global_config = nil
 local setup_done = false
 
@@ -13,12 +18,44 @@ local options_by_keymap_todo = {}
 ---@type table<string, Option>
 local options_by_keymap = {}
 
+--- A table of default options.
+---@type table<string, Option>
+M.default_options_by_keymap = {
+  cl = option_m.NotifyOnSetOption(option_m.SliderOption({
+    name = "conceallevel",
+    values = { 0, 1, 2, 3 },
+    get_state = function()
+      return vim.o.conceallevel
+    end,
+    set_state = function(state)
+      vim.o.conceallevel = state
+    end,
+    toggle_behavior = "min",
+  })),
+  d = option_m.NotifyOnSetOption(option_m.OnOffOption({
+    name = "diff",
+    get_state = function()
+      return vim.o.diff
+    end,
+    set_state = function(state)
+      vim.o.diff = state
+    end,
+  })),
+  w = option_m.NotifyOnSetOption(option_m.OnOffOption({
+    name = "wrap",
+    keymap = "w",
+    get_state = function()
+      return vim.o.wrap
+    end,
+    set_state = function(state)
+      vim.o.wrap = state
+    end,
+  })),
+}
+
 local TOGGLE_OPTION_PREFIX = "yo"
 local ENABLE_OPTION_PREFIX = "[o"
 local DISABLE_OPTION_PREFIX = "]o"
-
----@class ToggleModule
-local M = {}
 
 M.option = option_m
 
@@ -68,6 +105,11 @@ end
 
 ---@param config Config?
 M.setup = function(config)
+  local default_options_by_keymap = M.default_options_by_keymap
+  if config ~= nil and config.options_by_keymap ~= nil then
+    default_options_by_keymap = config.options_by_keymap
+  end
+
   setup_done = true
 
   global_config = config or {}
@@ -85,6 +127,10 @@ M.setup = function(config)
     },
   })
 
+  ---@diagnostic disable-next-line: param-type-mismatch
+  for keymap, option in pairs(default_options_by_keymap) do
+    M.register(keymap, option)
+  end
   for keymap, option in pairs(options_by_keymap_todo) do
     M.register(keymap, option)
   end
