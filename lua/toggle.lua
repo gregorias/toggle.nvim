@@ -2,6 +2,7 @@
 local M = {}
 
 local option_m = require("toggle.option")
+local default_options_m = require("toggle.default-options")
 
 ---@class Config
 ---@field register_keymaps fun(table, table?)?: Which-key compatible function for registering keymaps.
@@ -18,107 +19,13 @@ local options_by_keymap_todo = {}
 ---@type table<string, Option>
 local options_by_keymap = {}
 
-local for_normal_windows = function(fn)
-  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    for _, winid in ipairs(vim.fn.win_findbuf(bufnr)) do
-      if vim.fn.win_gettype(winid) == "" then
-        fn(winid)
-      end
-    end
-  end
-end
-
-local get_diff_all_state = function()
-  local diff_count = {
-    off = 0,
-    on = 0,
-  }
-  -- Diff only applies to normal windows.
-  for_normal_windows(function(winid)
-    if vim.wo[winid].diff then
-      diff_count.on = diff_count.on + 1
-    else
-      diff_count.off = diff_count.off + 1
-    end
-  end)
-  if diff_count.off > 0 and diff_count.on > 0 then
-    return "on"
-  elseif diff_count.on > 0 and diff_count.off == 0 then
-    return "on"
-  elseif diff_count.off > 0 and diff_count.on == 0 then
-    return "off"
-  elseif diff_count.off == 0 and diff_count.on == 0 then
-    return "none"
-  end
-end
-
 --- A table of default options.
 ---@type table<string, Option>
 M.default_options_by_keymap = {
-  cl = option_m.NotifyOnSetOption(option_m.SliderOption({
-    name = "conceallevel",
-    values = { 0, 1, 2, 3 },
-    get_state = function()
-      return vim.o.conceallevel
-    end,
-    set_state = function(state)
-      vim.o.conceallevel = state
-    end,
-    toggle_behavior = "min",
-  })),
-  d = option_m.NotifyOnSetOption(option_m.OnOffOption({
-    name = "diff",
-    get_state = function()
-      return vim.o.diff
-    end,
-    set_state = function(state)
-      vim.o.diff = state
-    end,
-  })),
-  D = option_m.NotifyOnSetOption({
-    name = "diff all",
-    get_state = get_diff_all_state,
-    set_prev_state = function()
-      for_normal_windows(function(winid)
-        vim.wo[winid].diff = false
-      end)
-      return "off"
-    end,
-    set_next_state = function()
-      for_normal_windows(function(winid)
-        vim.wo[winid].diff = true
-      end)
-      return "on"
-    end,
-    toggle_state = function()
-      local current_state = get_diff_all_state()
-      if current_state == "none" then
-        return nil
-      end
-      for_normal_windows(function(winid)
-        if current_state == "on" then
-          vim.wo[winid].diff = false
-        else
-          vim.wo[winid].diff = true
-        end
-      end)
-      if current_state == "on" then
-        return "off"
-      else
-        return "on"
-      end
-    end,
-  }),
-  w = option_m.NotifyOnSetOption(option_m.OnOffOption({
-    name = "wrap",
-    keymap = "w",
-    get_state = function()
-      return vim.o.wrap
-    end,
-    set_state = function(state)
-      vim.o.wrap = state
-    end,
-  })),
+  cl = option_m.NotifyOnSetOption(default_options_m.conceallevel_option),
+  d = option_m.NotifyOnSetOption(default_options_m.diff_option),
+  D = option_m.NotifyOnSetOption(default_options_m.diff_all_option),
+  w = option_m.NotifyOnSetOption(default_options_m.wrap_option),
 }
 
 local TOGGLE_OPTION_PREFIX = "yo"
