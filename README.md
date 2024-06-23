@@ -1,14 +1,23 @@
-# 🖲️ Toggle.nvim
+<!-- markdownlint-disable MD013 MD033 MD041 -->
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ellisonleao/nvim-plugin-template/lint-test.yml?branch=main&style=for-the-badge)
-![Lua](https://img.shields.io/badge/Made%20with%20Lua-blueviolet.svg?style=for-the-badge&logo=lua)
+<div align="center">
+  <p>
+    <img src="assets/toggle-switch.png" align="center" alt="Toggle Logo"
+         width="400" />
+  </p>
+  <p>
+    An extensible Neovim plugin for quickly toggling options.
+  </p>
+</div>
 
-Toggle is a modern, extensible plugin for toggling options ala
-[unimpaired.vim][unimpaired].
+Toggle is a modern, extensible Neovim plugin for toggling options ala
+[unimpaired.vim][unimpaired] written in Lua.
 
 ## ⚡️ Requirements
 
 - Neovim 0.10+
+- Optional plugin dependencies:
+  - [Which Key][which-key]
 
 ## 📦 Installation
 
@@ -21,4 +30,16 @@ Install the plugin with your preferred package manager, such as [Lazy]:
 }
 ```
 
+## 🚀 Usage
+
+## 🛠️ Configuration
+
+## 🙏 Acknowledgments
+
+The idea of quickly toggling options using `yo`, `[o` `]o` came from
+[unimpaired.vim][unimpaired].
+
+The toggle SVG is a modified icon from [Arthur Shlain](https://usefulicons.com/).
+
 [unimpaired]: https://github.com/tpope/vim-unimpaired
+[which-key]: https://github.com/folke/which-key.nvim
