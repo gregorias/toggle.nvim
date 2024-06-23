@@ -4,7 +4,7 @@ local M = {}
 local option_m = require("toggle.option")
 
 ---@class Config
----@field register_keymaps fun(table)?: Which-key compatible function for registering keymaps.
+---@field register_keymaps fun(table, table?)?: Which-key compatible function for registering keymaps.
 ---@field options_by_keymap table<string, Option>?: A table of options to register keyed by their keymap.
 ---                                                 If nil, the default options will be used.
 local global_config = nil
@@ -127,11 +127,15 @@ local DISABLE_OPTION_PREFIX = "]o"
 
 M.option = option_m
 
+---@class RegisterOpts
+---@field buffer? integer|boolean Creates a buffer-local option.
+
 ---Registers a new option.
 ---
 ---@param keymap string
 ---@param option Option
-function M.register(keymap, option)
+---@param opts RegisterOpts?
+function M.register(keymap, option, opts)
   if not setup_done then
     options_by_keymap_todo[keymap] = option
     return nil
@@ -168,7 +172,7 @@ function M.register(keymap, option)
         "Go to next (on) state of " .. option.name,
       },
     },
-  })
+  }, { buffer = opts and opts.buffer })
 end
 
 ---@param config Config?
