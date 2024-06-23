@@ -65,5 +65,6 @@ The idea of quickly toggling options using `yo`, `[o` `]o` came from
 
 The toggle SVG is a modified icon from [Arthur Shlain](https://usefulicons.com/).
 
+[Lazy]: https://github.com/folke/lazy.nvim
 [unimpaired]: https://github.com/tpope/vim-unimpaired
 [which-key]: https://github.com/folke/which-key.nvim
