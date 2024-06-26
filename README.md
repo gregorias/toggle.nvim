@@ -47,6 +47,17 @@ Install the plugin with your preferred package manager, such as [Lazy]:
 
 ## 🛠️ Configuration
 
+### Setup
+
+The default configuration looks like so:
+
+```lua
+require"toggle".setup{
+  keymap_registry = require("toggle.keymap").keymap_registry(),
+  options_by_keymap = …,
+}
+```
+
 ### Default options
 
 All default options use `vim.notify` for state changes.

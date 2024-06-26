@@ -4,10 +4,12 @@ local M = {}
 local option_m = require("toggle.option")
 local default_options_m = require("toggle.default-options")
 
----@class Config
----@field register_keymaps fun(table, table?)?: Which-key compatible function for registering keymaps.
+---@class ToggleConfig
+---@field keymap_registry? KeymapRegistry?: A keymap registry.
 ---@field options_by_keymap table<string, Option>?: A table of options to register keyed by their keymap.
 ---                                                 If nil, the default options will be used.
+
+---@type ToggleConfig
 local global_config = nil
 local setup_done = false
 
@@ -28,9 +30,10 @@ M.default_options_by_keymap = {
   w = option_m.NotifyOnSetOption(default_options_m.wrap_option),
 }
 
+-- TODO: Rename these
 local TOGGLE_OPTION_PREFIX = "yo"
-local ENABLE_OPTION_PREFIX = "[o"
-local DISABLE_OPTION_PREFIX = "]o"
+local ENABLE_OPTION_PREFIX = "]o"
+local DISABLE_OPTION_PREFIX = "[o"
 
 M.option = option_m
 
@@ -54,35 +57,18 @@ function M.register(keymap, option, opts)
   end
   options_by_keymap[keymap] = option
 
-  global_config.register_keymaps({
-    ["yo"] = {
-      [keymap] = {
-        function()
-          option.toggle_state()
-        end,
-        "Toggle " .. option.name,
-      },
-    },
-    ["[o"] = {
-      [keymap] = {
-        function()
-          option.set_prev_state()
-        end,
-        "Go to previous (off) state of " .. option.name,
-      },
-    },
-    ["]o"] = {
-      [keymap] = {
-        function()
-          option.set_next_state()
-        end,
-        "Go to next (on) state of " .. option.name,
-      },
-    },
-  }, { buffer = opts and opts.buffer })
+  global_config.keymap_registry.register_keymap("n", TOGGLE_OPTION_PREFIX .. keymap, function()
+    option.toggle_state()
+  end, { desc = "Toggle " .. option.name, buffer = opts and opts.buffer })
+  global_config.keymap_registry.register_keymap("n", DISABLE_OPTION_PREFIX .. keymap, function()
+    option.set_prev_state()
+  end, { desc = "Set previous (off) state of " .. option.name, buffer = opts and opts.buffer })
+  global_config.keymap_registry.register_keymap("n", ENABLE_OPTION_PREFIX .. keymap, function()
+    option.set_next_state()
+  end, { desc = "Set next (on) state of " .. option.name, buffer = opts and opts.buffer })
 end
 
----@param config Config?
+---@param config ToggleConfig?
 M.setup = function(config)
   local default_options_by_keymap = M.default_options_by_keymap
   if config ~= nil and config.options_by_keymap ~= nil then
@@ -92,19 +78,11 @@ M.setup = function(config)
   setup_done = true
 
   global_config = config or {}
-  global_config.register_keymaps = global_config.register_keymaps or require("which-key").register
+  global_config.keymap_registry = global_config.keymap_registry or require("toggle.keymap").keymap_registry()
 
-  global_config.register_keymaps({
-    [TOGGLE_OPTION_PREFIX] = {
-      name = "+Toggle option",
-    },
-    [ENABLE_OPTION_PREFIX] = {
-      name = "+Enable option",
-    },
-    [DISABLE_OPTION_PREFIX] = {
-      name = "+Disable option",
-    },
-  })
+  global_config.keymap_registry.register_keymap_group("n", TOGGLE_OPTION_PREFIX, "+Toggle option")
+  global_config.keymap_registry.register_keymap_group("n", ENABLE_OPTION_PREFIX, "+Enable option")
+  global_config.keymap_registry.register_keymap_group("n", DISABLE_OPTION_PREFIX, "+Disable option")
 
   ---@diagnostic disable-next-line: param-type-mismatch
   for keymap, option in pairs(default_options_by_keymap) do
