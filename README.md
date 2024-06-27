@@ -69,6 +69,18 @@ All default options use `vim.notify` for state changes.
 | diff all     | `D`    | option for diffing all visible windows |
 | wrap         | `w`    | on-off switch for `wrap`               |
 
+## ✅ Comparison to Unimpaired
+
+[Unimpaired][unimpaired] has more scope than Toggle, but it’s less extensible.
+
+| Feature                            | Toggle | [Unimpaired][unimpaired] |
+| :--                                | :--:   | :--:                     |
+| [Which Key][which-key] integration | ✅     | ❌                       |
+| [nvim-notify] integration          | ✅     | ❌                       |
+| Extensible options                 | ✅     | ❌                       |
+| Configurable keybindings           | ✅     | ❌                       |
+| Slider (non-binary) option support | ✅     | ❌                       |
+
 ## 🙏 Acknowledgments
 
 The idea of quickly toggling options using `yo`, `[o` `]o` came from
