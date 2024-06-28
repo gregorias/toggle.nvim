@@ -88,7 +88,11 @@ M.setup = function(config)
   global_config.keymap_registry = global_config.keymap_registry or require("toggle.keymap").keymap_registry()
   global_config.keymap_registry.register_keymap_group("n", global_config.keymaps.toggle_option_prefix, "+Toggle option")
   global_config.keymap_registry.register_keymap_group("n", global_config.keymaps.next_option_prefix, "+Next option")
-  global_config.keymap_registry.register_keymap_group("n", global_config.keymaps.prev_option_prefix, "+Previous option")
+  global_config.keymap_registry.register_keymap_group(
+    "n",
+    global_config.keymaps.previous_option_prefix,
+    "+Previous option"
+  )
 
   ---@diagnostic disable-next-line: param-type-mismatch
   for keymap, option in pairs(global_config.options_by_keymap) do
