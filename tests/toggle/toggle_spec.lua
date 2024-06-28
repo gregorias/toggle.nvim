@@ -6,6 +6,28 @@ describe("toggle", function()
     it("works", function()
       toggle.setup({ register_keymaps = function() end })
     end)
+
+    it("configures keymap_prefixes", function()
+      toggle.setup({ keymaps = { toggle_option_prefix = "top" } })
+
+      local test_var = 0
+      toggle.register("t", {
+        name = "test",
+        get_state = function()
+          return test_var
+        end,
+        toggle_state = function()
+          test_var = 1 - test_var
+          return test_var
+        end,
+      }, { buffer = true })
+
+      -- Toggle test. Execute immediately and use remapping.
+      test_helpers.execute_keys("topt", "xm")
+
+      -- Check that the buffer-local option has been triggered.
+      assert.are.same(1, test_var)
+    end)
   end)
 
   describe("register", function()
@@ -27,18 +49,18 @@ describe("toggle", function()
 
       -- Toggle test. Execute immediately and use remapping.
       test_helpers.execute_keys("yot", "xm")
-			-- Check that the buffer-local option has been triggered.
+      -- Check that the buffer-local option has been triggered.
       assert.are.same(1, test_var)
 
-			-- Change buffer.
+      -- Change buffer.
       local world_bufnr = test_helpers.create_buf({ "world" })
-			-- Toggle test.
+      -- Toggle test.
       test_helpers.execute_keys("yot", "xm")
-			-- Check that the buffer-local option has not been triggered.
+      -- Check that the buffer-local option has not been triggered.
       assert.are.same(1, test_var)
 
-			vim.api.nvim_buf_delete(world_bufnr, {})
-			vim.api.nvim_buf_delete(hi_bufnr, {})
+      vim.api.nvim_buf_delete(world_bufnr, {})
+      vim.api.nvim_buf_delete(hi_bufnr, {})
     end)
   end)
 end)

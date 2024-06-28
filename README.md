@@ -49,11 +49,18 @@ Install the plugin with your preferred package manager, such as [Lazy]:
 
 ### Setup
 
-The default configuration looks like so:
+The default configuration setup looks like so:
 
 ```lua
 require"toggle".setup{
+  keymaps = {
+    toggle_option_prefix = "yo",
+    previous_option_prefix = "[o",
+    next_option_prefix = "]o",
+  },
+  -- The interface for registering keymaps.
   keymap_registry = require("toggle.keymap").keymap_registry(),
+  -- See the default options section below.
   options_by_keymap = …,
 }
 ```
