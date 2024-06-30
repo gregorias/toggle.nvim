@@ -57,6 +57,7 @@ require"toggle".setup{
     toggle_option_prefix = "yo",
     previous_option_prefix = "[o",
     next_option_prefix = "]o",
+    status_dashboard = "yos"
   },
   -- The interface for registering keymaps.
   keymap_registry = require("toggle.keymap").keymap_registry(),

@@ -22,6 +22,7 @@ local default_config = {
     toggle_option_prefix = "yo",
     previous_option_prefix = "[o",
     next_option_prefix = "]o",
+    status_dashboard = "yos",
   },
   keymap_registry = require("toggle.keymap").keymap_registry(),
   options_by_keymap = {
@@ -102,6 +103,19 @@ M.setup = function(config)
     M.register(keymap, option)
   end
   options_by_keymap_todo = {}
+
+  if global_config.keymaps.status_dashboard then
+    global_config.keymap_registry.register_keymap("n", global_config.keymaps.status_dashboard, function()
+      local options = {}
+      for _, option in pairs(options_by_keymap) do
+        table.insert(options, option)
+      end
+      table.sort(options, function(a, b)
+        return a.name < b.name
+      end)
+      require("toggle.dashboard").show_dashboard(options)
+    end, { desc = "Show Toggle status dashboard" })
+  end
 end
 
 return M
