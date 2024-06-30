@@ -9,9 +9,16 @@ globals:
       - type: bool
       - type: string
         required: false
+  assert.has_error:
+    args:
+      - type: function
+      - type: string
   assert.has.errors:
     args:
       - type: function
+  assert.are_nil:
+    args:
+      - type: any
   assert.are.same:
     args:
       - type: any
