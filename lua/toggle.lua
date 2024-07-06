@@ -106,13 +106,7 @@ M.setup = function(config)
 
   if global_config.keymaps.status_dashboard then
     global_config.keymap_registry.register_keymap("n", global_config.keymaps.status_dashboard, function()
-      local options = {}
-      for _, option in pairs(options_by_keymap) do
-        table.insert(options, option)
-      end
-      table.sort(options, function(a, b)
-        return a.name < b.name
-      end)
+      local options = require("toggle.dashboard").get_options_for_dashboard()
       require("toggle.dashboard").show_dashboard(options)
     end, { desc = "Show Toggle status dashboard" })
   end

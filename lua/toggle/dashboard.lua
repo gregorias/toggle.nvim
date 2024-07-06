@@ -36,4 +36,21 @@ M.show_dashboard = function(options)
   }, function() end)
 end
 
+--- Gets options suitable for the dashboard.
+---
+---@return Option[]
+M.get_options_for_dashboard = function()
+  local options = {}
+  local option_registry = require("toggle.option-registry")
+  local bufnr = vim.api.nvim_get_current_buf()
+  for _, option in pairs(option_registry.get_options(bufnr)) do
+    table.insert(options, option)
+  end
+
+  table.sort(options, function(a, b)
+    return a.name < b.name
+  end)
+  return options
+end
+
 return M
