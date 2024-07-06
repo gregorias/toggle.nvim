@@ -31,7 +31,7 @@ describe("toggle", function()
   end)
 
   describe("register", function()
-    it("respects buffer-local options", function()
+    it("respects buffer-local options for keymaps", function()
       toggle.setup()
       local hi_bufnr = test_helpers.create_buf({ "hi" })
 
@@ -60,6 +60,26 @@ describe("toggle", function()
       assert.are.same(1, test_var)
 
       vim.api.nvim_buf_delete(world_bufnr, {})
+      vim.api.nvim_buf_delete(hi_bufnr, {})
+    end)
+    it("registers options in the registry", function()
+      toggle.setup()
+      local hi_bufnr = test_helpers.create_buf({ "hi" })
+      toggle.register("t", {
+        name = "test",
+        get_state = function()
+          return false
+        end,
+        toggle_state = function()
+          return nil
+        end,
+      }, { buffer = hi_bufnr })
+
+      local option_registry = require("toggle.option-registry")
+      local hi_options = option_registry.get_options(hi_bufnr)
+
+      assert.is.True(hi_options["test"] ~= nil)
+
       vim.api.nvim_buf_delete(hi_bufnr, {})
     end)
   end)

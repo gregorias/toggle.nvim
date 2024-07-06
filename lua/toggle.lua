@@ -41,10 +41,6 @@ local setup_done = false
 ---@type table<string, Option>
 local options_by_keymap_todo = {}
 
---- A repository of all registered options.
----@type table<string, Option>
-local options_by_keymap = {}
-
 M.option = option_m
 
 ---@class RegisterOpts
@@ -61,11 +57,15 @@ function M.register(keymap, option, opts)
     return nil
   end
 
-  if options_by_keymap.keymap ~= nil then
-    vim.notify("Option " .. option.name .. " already registered.", vim.log.levels.ERROR)
-    return nil
+  local bufnr = opts and opts.buffer
+  if type(bufnr) == "boolean" and bufnr then
+    bufnr = vim.api.nvim_get_current_buf()
   end
-  options_by_keymap[keymap] = option
+
+  local option_registry = require("toggle.option-registry")
+  option_registry.register_option(option, {
+    bufnr = bufnr,
+  })
 
   local keymap_registry = global_config.keymap_registry
   local keymaps = global_config.keymaps
