@@ -24,7 +24,11 @@ M.diff_option = option.OnOffOption({
     return vim.wo.diff
   end,
   set_state = function(state)
-    vim.wo.diff = state
+    if state then
+      vim.cmd("diffthis")
+    else
+      vim.cmd("diffoff")
+    end
   end,
 })
 
@@ -73,15 +77,11 @@ M.diff_all_option = {
   name = "diff all",
   get_state = get_diff_all_state,
   set_prev_state = function()
-    for_normal_windows(function(winid)
-      vim.wo[winid].diff = false
-    end)
+    vim.cmd("windo diffoff")
     return diff_all_option_off
   end,
   set_next_state = function()
-    for_normal_windows(function(winid)
-      vim.wo[winid].diff = true
-    end)
+    vim.cmd("windo diffthis")
     return diff_all_option_on
   end,
   toggle_state = function()
@@ -89,16 +89,11 @@ M.diff_all_option = {
     if current_state == diff_all_option_none then
       return nil
     end
-    for_normal_windows(function(winid)
-      if current_state == diff_all_option_on then
-        vim.wo[winid].diff = false
-      else
-        vim.wo[winid].diff = true
-      end
-    end)
     if current_state == diff_all_option_on then
+      vim.cmd("windo diffoff")
       return diff_all_option_off
     else
+      vim.cmd("windo diffthis")
       return diff_all_option_on
     end
   end,
