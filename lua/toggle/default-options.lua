@@ -77,11 +77,11 @@ M.diff_all_option = {
   name = "diff all",
   get_state = get_diff_all_state,
   set_prev_state = function()
-    vim.cmd("windo diffoff")
+    vim.cmd("windo if win_gettype() == '' | diffoff | endif")
     return diff_all_option_off
   end,
   set_next_state = function()
-    vim.cmd("windo diffthis")
+    vim.cmd("windo if win_gettype() == '' | diffthis | endif")
     return diff_all_option_on
   end,
   toggle_state = function()
@@ -90,10 +90,10 @@ M.diff_all_option = {
       return nil
     end
     if current_state == diff_all_option_on then
-      vim.cmd("windo diffoff")
+      vim.cmd("windo if win_gettype() == '' | diffoff | endif")
       return diff_all_option_off
     else
-      vim.cmd("windo diffthis")
+      vim.cmd("windo if win_gettype() == '' | diffthis | endif")
       return diff_all_option_on
     end
   end,
