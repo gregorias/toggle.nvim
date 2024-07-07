@@ -39,6 +39,11 @@ local for_normal_windows = function(fn)
   end
 end
 
+local diff_all_option_off = "OFF"
+local diff_all_option_on = "ON"
+local diff_all_option_none = "NONE"
+local diff_all_option_mixed = "MIXED"
+
 --- Gets the diff state of all normal windows.
 local get_diff_all_state = function()
   local diff_count = {
@@ -54,13 +59,13 @@ local get_diff_all_state = function()
     end
   end)
   if diff_count.off > 0 and diff_count.on > 0 then
-    return "on"
+    return diff_all_option_mixed
   elseif diff_count.on > 0 and diff_count.off == 0 then
-    return "on"
+    return diff_all_option_on
   elseif diff_count.off > 0 and diff_count.on == 0 then
-    return "off"
+    return diff_all_option_off
   elseif diff_count.off == 0 and diff_count.on == 0 then
-    return "none"
+    return diff_all_option_none
   end
 end
 
@@ -71,30 +76,30 @@ M.diff_all_option = {
     for_normal_windows(function(winid)
       vim.wo[winid].diff = false
     end)
-    return "off"
+    return diff_all_option_off
   end,
   set_next_state = function()
     for_normal_windows(function(winid)
       vim.wo[winid].diff = true
     end)
-    return "on"
+    return diff_all_option_on
   end,
   toggle_state = function()
     local current_state = get_diff_all_state()
-    if current_state == "none" then
+    if current_state == diff_all_option_none then
       return nil
     end
     for_normal_windows(function(winid)
-      if current_state == "on" then
+      if current_state == diff_all_option_on then
         vim.wo[winid].diff = false
       else
         vim.wo[winid].diff = true
       end
     end)
-    if current_state == "on" then
-      return "off"
+    if current_state == diff_all_option_on then
+      return diff_all_option_off
     else
-      return "on"
+      return diff_all_option_on
     end
   end,
 }
