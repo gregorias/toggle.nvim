@@ -25,9 +25,10 @@ end
 ---
 ---@param options Option[]
 M.show_dashboard = function(options)
+  local option_m = require("toggle.option")
   local entries = vim.tbl_map(function(option)
     return {
-      [1] = M.show_option_state(option),
+      [1] = option_m.show_option_state(option.get_state()),
       [2] = option.name,
       option = option,
     }
@@ -59,27 +60,6 @@ M.get_options_for_dashboard = function()
     return a.name < b.name
   end)
   return options
-end
-
---- Shows option state.
----
----@param option Option
----@return string
-M.show_option_state = function(option)
-  local state = option.get_state()
-  local state_str = ""
-  if type(state) == "string" then
-    state_str = state
-  elseif type(state) == "boolean" then
-    if state then
-      state_str = "ON"
-    else
-      state_str = "OFF"
-    end
-  else
-    state_str = vim.inspect(state)
-  end
-  return state_str
 end
 
 --- Computes the column widths for a list of entries.

@@ -16,6 +16,28 @@ local M = {}
 ---@field set_prev_state fun(): any? Sets and returns the previous state if any.
 ---@field toggle_state fun(): any? Toggles and returns the new state if any.
 
+--- Shows option state.
+---
+--- This function is meant to provide a uniform way of showing an option state.
+---
+---@param state number|boolean|string
+---@return string
+M.show_option_state = function(state)
+  local state_str = ""
+  if type(state) == "string" then
+    state_str = state
+  elseif type(state) == "boolean" then
+    if state then
+      state_str = "ON"
+    else
+      state_str = "OFF"
+    end
+  else
+    state_str = vim.inspect(state)
+  end
+  return state_str
+end
+
 --- An option that can be toggled on and off.
 ---@class OnOffOption
 ---@field name string A human-readable identifier for the option.
@@ -182,7 +204,7 @@ M.NotifyOnSetOption = function(option, params)
       local new_state = f()
       if new_state ~= nil then
         notify(
-          "Set " .. option.name .. " to " .. vim.inspect(new_state),
+          "Set " .. option.name .. " to " .. M.show_option_state(new_state),
           vim.log.levels.INFO,
           { title = "Toggle.nvim" }
         )

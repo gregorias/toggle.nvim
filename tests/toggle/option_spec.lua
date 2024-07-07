@@ -1,5 +1,13 @@
 local option_m = require("toggle.option")
 describe("toggle.option", function()
+  describe("show_option_state", function()
+    it("shows the state of an option", function()
+      assert.are.same("1", option_m.show_option_state(1))
+      assert.are.same("ON", option_m.show_option_state(true))
+      assert.are.same("OFF", option_m.show_option_state(false))
+      assert.are.same("foo", option_m.show_option_state("foo"))
+    end)
+  end)
   describe("OnOffOption", function()
     it("behaves like an on-off option", function()
       local state = false
