@@ -35,12 +35,28 @@ describe("toggle.dashboard", function()
         return option.name
       end, options)
 
-			assert.are.same({ "atest_option_hi", "btest_option_hi_local" }, option_names)
-
+      assert.are.same({ "atest_option_hi", "btest_option_hi_local" }, option_names)
 
       option_registry.unregister_option("test_option_hi", { buffer = hi_bufnr })
       vim.api.nvim_buf_delete(hi_bufnr, {})
       vim.api.nvim_buf_delete(world_bufnr, {})
+    end)
+  end)
+
+  describe("compute_column_widths", function()
+    it("returns an empty list when there are no entries", function()
+      assert.are.same({}, dashboard_m.compute_column_widths({}))
+    end)
+
+    it("returns correct widths", function()
+      assert.are.same(
+        { 5, 6 },
+        dashboard_m.compute_column_widths({
+          { "hi", "world" },
+          { "hello", "wo" },
+          { "hi", "worlad" },
+        })
+      )
     end)
   end)
 end)
