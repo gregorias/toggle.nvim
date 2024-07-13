@@ -26,10 +26,15 @@ local default_config = {
   },
   keymap_registry = require("toggle.keymap").keymap_registry(),
   options_by_keymap = {
+    b = option_m.NotifyOnSetOption(default_options_m.background_option),
     cl = option_m.NotifyOnSetOption(default_options_m.conceallevel_option),
     d = option_m.NotifyOnSetOption(default_options_m.diff_option),
     D = option_m.NotifyOnSetOption(default_options_m.diff_all_option),
+    l = option_m.NotifyOnSetOption(default_options_m.list_option),
+    n = option_m.NotifyOnSetOption(default_options_m.number_option),
+    r = option_m.NotifyOnSetOption(default_options_m.relativenumber_option),
     w = option_m.NotifyOnSetOption(default_options_m.wrap_option),
+    ["-"] = option_m.NotifyOnSetOption(default_options_m.cursorline_option),
   },
 }
 

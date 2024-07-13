@@ -7,6 +7,18 @@ local M = {}
 local option = require("toggle.option")
 
 ---@type EnumOption
+M.background_option = option.EnumOption({
+  name = "background",
+  states = { "light", "dark" },
+  get_state = function()
+    return vim.o.background
+  end,
+  set_state = function(state)
+    vim.o.background = state
+  end,
+})
+
+---@type EnumOption
 M.conceallevel_option = option.EnumOption({
   name = "conceallevel",
   states = { 0, 1, 2, 3 },
@@ -17,6 +29,17 @@ M.conceallevel_option = option.EnumOption({
     vim.o.conceallevel = state
   end,
   toggle_behavior = "min",
+})
+
+---@type EnumOption
+M.cursorline_option = option.OnOffOption({
+  name = "cursorline",
+  get_state = function()
+    return vim.wo.cursorline
+  end,
+  set_state = function(state)
+    vim.wo.cursorline = state
+  end,
 })
 
 ---@type EnumOption
@@ -109,6 +132,39 @@ M.diff_all_option = {
     end
   end,
 }
+
+---@type EnumOption
+M.list_option = option.OnOffOption({
+  name = "list",
+  get_state = function()
+    return vim.wo.list
+  end,
+  set_state = function(state)
+    vim.wo.list = state
+  end,
+})
+
+---@type EnumOption
+M.number_option = option.OnOffOption({
+  name = "number",
+  get_state = function()
+    return vim.wo.number
+  end,
+  set_state = function(state)
+    vim.wo.number = state
+  end,
+})
+
+---@type EnumOption
+M.relativenumber_option = option.OnOffOption({
+  name = "relativenumber",
+  get_state = function()
+    return vim.wo.relativenumber
+  end,
+  set_state = function(state)
+    vim.wo.relativenumber = state
+  end,
+})
 
 ---@type EnumOption
 M.wrap_option = option.OnOffOption({

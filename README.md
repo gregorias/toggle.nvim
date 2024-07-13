@@ -70,12 +70,17 @@ require"toggle".setup{
 
 All default options use `vim.notify` for state changes.
 
-| Option       | Keymap | Description                            |
-| :--          | :--:   | :--                                    |
-| conceallevel | `cl`   | 0–3 slider with 0-sticky toggle        |
-| diff         | `d`    | on-off switch for `diffthis`/`diffoff` |
-| diff all     | `D`    | option for diffing all visible windows |
-| wrap         | `w`    | on-off switch for `wrap`               |
+| Option         | Keymap | Description                            |
+| :--            | :--:   | :--                                    |
+| background     | `b`    | dark-light switch                      |
+| conceallevel   | `cl`   | 0–3 slider with 0-sticky toggle        |
+| cursorline     | `-`    | on-off switch for `cursorline`         |
+| diff           | `d`    | on-off switch for `diffthis`/`diffoff` |
+| diff all       | `D`    | option for diffing all visible windows |
+| list           | `l`    | on-off switch for `list`               |
+| number         | `n`    | on-off switch for `number`             |
+| relativenumber | `r`    | on-off switch for `relativenumber`     |
+| wrap           | `w`    | on-off switch for `wrap`               |
 
 ## ✅ Comparison to Unimpaired
 
