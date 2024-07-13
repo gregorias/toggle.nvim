@@ -6,9 +6,9 @@ local M = {}
 
 local option = require("toggle.option")
 
-M.conceallevel_option = option.SliderOption({
+M.conceallevel_option = option.EnumOption({
   name = "conceallevel",
-  values = { 0, 1, 2, 3 },
+  states = { 0, 1, 2, 3 },
   get_state = function()
     return vim.o.conceallevel
   end,

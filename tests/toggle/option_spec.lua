@@ -42,16 +42,17 @@ describe("toggle.option", function()
       assert.is.False(state)
     end)
   end)
-  describe("SliderOption", function()
+  describe("EnumOption", function()
     it("behaves like a cycle slider option", function()
       local state = 1
-      local slider_option = option_m.SliderOption({
+      local slider_option = option_m.EnumOption({
         name = "test",
-        values = { 1, 2, 3 },
+        states = { 1, 2, 3 },
         get_state = function()
           return state
         end,
         set_state = function(new_state)
+          ---@diagnostic disable-next-line: cast-local-type
           state = new_state
         end,
         toggle_behavior = "cycle",
@@ -89,13 +90,14 @@ describe("toggle.option", function()
 
     it("behaves like a min slider option", function()
       local state = 3
-      local slider_option = option_m.SliderOption({
+      local slider_option = option_m.EnumOption({
         name = "test",
-        values = { 1, 2, 3, 4 },
+        states = { 1, 2, 3, 4 },
         get_state = function()
           return state
         end,
         set_state = function(new_state)
+          ---@diagnostic disable-next-line: cast-local-type
           state = new_state
         end,
         toggle_behavior = "min",
@@ -117,13 +119,14 @@ describe("toggle.option", function()
 
     it("behaves like a max slider option", function()
       local state = 3
-      local slider_option = option_m.SliderOption({
+      local slider_option = option_m.EnumOption({
         name = "test",
-        values = { 1, 2, 3, 4 },
+        states = { 1, 2, 3, 4 },
         get_state = function()
           return state
         end,
         set_state = function(new_state)
+          ---@diagnostic disable-next-line: cast-local-type
           state = new_state
         end,
         toggle_behavior = "max",
