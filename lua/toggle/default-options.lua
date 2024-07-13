@@ -6,6 +6,7 @@ local M = {}
 
 local option = require("toggle.option")
 
+---@type EnumOption
 M.conceallevel_option = option.EnumOption({
   name = "conceallevel",
   states = { 0, 1, 2, 3 },
@@ -18,6 +19,7 @@ M.conceallevel_option = option.EnumOption({
   toggle_behavior = "min",
 })
 
+---@type EnumOption
 M.diff_option = option.OnOffOption({
   name = "diff",
   get_state = function()
@@ -73,32 +75,42 @@ local get_diff_all_state = function()
   end
 end
 
+---@type EnumOption
 M.diff_all_option = {
   name = "diff all",
-  get_state = get_diff_all_state,
-  set_prev_state = function()
-    vim.cmd("windo if win_gettype() == '' | diffoff | endif")
-    return diff_all_option_off
+  get_available_states = function(_)
+    return { diff_all_option_off, diff_all_option_on }
   end,
-  set_next_state = function()
-    vim.cmd("windo if win_gettype() == '' | diffthis | endif")
-    return diff_all_option_on
+  get_state = function(_)
+    return get_diff_all_state()
   end,
-  toggle_state = function()
-    local current_state = get_diff_all_state()
+  set_state = function(_, state)
+    if state == diff_all_option_off then
+      vim.cmd("windo if win_gettype() == '' | diffoff | endif")
+    elseif state == diff_all_option_on then
+      vim.cmd("windo if win_gettype() == '' | diffthis | endif")
+    end
+  end,
+  set_prev_state = function(self)
+    self:set_state(diff_all_option_off)
+  end,
+  set_next_state = function(self)
+    self:set_state(diff_all_option_on)
+  end,
+  toggle_state = function(self)
+    local current_state = self:get_state()
     if current_state == diff_all_option_none then
-      return nil
+      return
     end
     if current_state == diff_all_option_on then
-      vim.cmd("windo if win_gettype() == '' | diffoff | endif")
-      return diff_all_option_off
+      self:set_state(diff_all_option_off)
     else
-      vim.cmd("windo if win_gettype() == '' | diffthis | endif")
-      return diff_all_option_on
+      self:set_state(diff_all_option_on)
     end
   end,
 }
 
+---@type EnumOption
 M.wrap_option = option.OnOffOption({
   name = "wrap",
   get_state = function()

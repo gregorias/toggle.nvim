@@ -61,7 +61,7 @@ end
 --- Creates a new enum option.
 ---
 ---@param params EnumOptionParams
----@return ToggleOption
+---@return EnumOption
 M.EnumOption = function(params)
   local toggle_behavior = params.toggle_behavior or "cycle"
   local state_to_idx = {}
@@ -171,7 +171,7 @@ end
 --- Creates a new on-off option.
 ---
 ---@param on_off_option OnOffOption
----@return ToggleOption
+---@return EnumOption
 M.OnOffOption = function(on_off_option)
   return M.EnumOption({
     name = on_off_option.name,

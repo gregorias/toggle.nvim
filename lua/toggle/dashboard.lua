@@ -42,7 +42,31 @@ M.show_dashboard = function(options)
     format_item = function(entry)
       return format_option(entry, column_widths)
     end,
-  }, function() end)
+  }, function(choice)
+    M.show_option_state_select(choice.option)
+  end)
+end
+
+--- Shows a select menu for an option.
+---
+---@param option EnumOption
+M.show_option_state_select = function(option)
+  local available_states = option:get_available_states()
+  local current_state = option:get_state()
+  vim.ui.select(available_states, {
+    prompt = "Option State",
+    kind = "toggle.nvim",
+    format_item = function(entry)
+      local option_m = require("toggle.option")
+      local current_mark = " "
+      if entry == current_state then
+        current_mark = "✓"
+      end
+      return string.format("%s %s %s", current_mark, column_separator_char, option_m.show_option_state(entry))
+    end,
+  }, function(choice)
+    option:set_state(choice)
+  end)
 end
 
 --- Gets options suitable for the dashboard.

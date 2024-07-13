@@ -13,8 +13,8 @@ local default_options_m = require("toggle.default-options")
 ---@class UserToggleConfig
 ---@field keymaps table
 ---@field keymap_registry? KeymapRegistry? A keymap registry.
----@field options_by_keymap table<string, Option>? A table of options to register keyed by their keymap.
----                                                If nil, the default options will be used.
+---@field options_by_keymap table<string, EnumOption>? A table of options to register keyed by their keymap.
+---                                                    If nil, the default options will be used.
 
 ---@type ToggleConfig
 local default_config = {
@@ -38,7 +38,7 @@ local global_config = default_config
 local setup_done = false
 
 --- A repository of all to-be-registered options.
----@type table<string, ToggleOption>
+---@type table<string, EnumOption>
 local options_by_keymap_todo = {}
 
 M.option = option_m
@@ -49,7 +49,7 @@ M.option = option_m
 ---Registers a new option.
 ---
 ---@param keymap string
----@param option ToggleOption
+---@param option EnumOption
 ---@param opts RegisterOpts?
 function M.register(keymap, option, opts)
   if not setup_done then
