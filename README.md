@@ -47,6 +47,14 @@ Install the plugin with your preferred package manager, such as [Lazy]:
 
 ## 🚀 Usage
 
+Toggle uses `yo`, because `y` looks like a toggle turned upside down.
+
+- To open a dashboard of options, use `yos` in normal mode.
+- To toggle an option, use `yo` plus `OPTION_KEYMAP`. For example, `yob`
+  switches the current background.
+- To turn on an option or switch to its next state, use `]o` plus
+  `OPTION_KEYMAP`. For the opposite, use `[o`.
+
 ## 🛠️ Configuration
 
 ### Setup
