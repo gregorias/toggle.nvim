@@ -1,20 +1,26 @@
 --- A module for Toggle options.
---
--- @module toggle.option
--- @alias M
+---
+---@module "toggle.option"
 local M = {}
 
---- A generic togglable option.
----
---- An option has esentially three affordances: toggling, moving to the next or on state, and moving to the previous or
---- off state.
+---@alias OptionState string|number|boolean
+
+--- A generic option.
 ---
 ---@class Option
 ---@field name string A human-readable identifier for the option.
----@field get_state fun(): any Returns the current state.
----@field set_next_state fun(): any? Sets and returns the next state if any.
----@field set_prev_state fun(): any? Sets and returns the previous state if any.
----@field toggle_state fun(): any? Toggles and returns the new state if any.
+---@field get_state fun(self: Option): OptionState Returns the current state.
+---@field set_state fun(self: Option, state: OptionState) Sets the option’s state to the given value.
+
+--- An option that can acts as a toggle.
+---
+--- A toggle has esentially three affordances: toggling, moving to the next or on state, and moving to the previous or
+--- off state.
+---
+---@class ToggleOption: Option
+---@field set_next_state fun(self: ToggleOption) Sets the next state.
+---@field set_prev_state fun(self: ToggleOption) Sets the previous state.
+---@field toggle_state fun(self: ToggleOption) Toggles the new state.
 
 --- Shows option state.
 ---
@@ -45,37 +51,39 @@ end
 ---@field set_state fun(state: boolean) Sets the option’s state to the given value.
 
 --- Creates a new on-off option.
+---
 ---@param on_off_option OnOffOption
----@return Option
+---@return ToggleOption
 M.OnOffOption = function(on_off_option)
   return {
     name = on_off_option.name,
-    get_state = on_off_option.get_state,
-    set_next_state = function()
-      if not on_off_option.get_state() then
+    get_state = function(_)
+      return on_off_option.get_state()
+    end,
+    set_state = function(_, val)
+      on_off_option.set_state(val)
+    end,
+    set_next_state = function(self)
+      if not self:get_state() then
         local new_state = true
-        on_off_option.set_state(new_state)
-        return new_state
+        self:set_state(new_state)
       end
-      return nil
     end,
-    set_prev_state = function()
-      if on_off_option.get_state() then
+    set_prev_state = function(self)
+      if self:get_state() then
         local new_state = false
-        on_off_option.set_state(new_state)
-        return new_state
+        self:set_state(new_state)
       end
-      return nil
     end,
-    toggle_state = function()
+    toggle_state = function(self)
       local new_state = not on_off_option.get_state()
-      on_off_option.set_state(new_state)
-      return new_state
+      self:set_state(new_state)
     end,
   }
 end
 
 --- An option with a range, like a slider.
+---
 ---@class SliderOption
 ---@field name string A human-readable identifier for the option.
 ---@field values table<any> An ordered list of possible values.
@@ -84,8 +92,9 @@ end
 ---@field toggle_behavior "cycle" | "min" | "max" | nil (default "cycle") The behavior when toggling.
 
 --- Creates a new slider option.
+---
 ---@param slider_option SliderOption
----@return Option
+---@return ToggleOption
 M.SliderOption = function(slider_option)
   local toggle_behavior = slider_option.toggle_behavior or "cycle"
   local value_to_idx = {}
@@ -116,39 +125,42 @@ M.SliderOption = function(slider_option)
 
   return {
     name = slider_option.name,
-    get_state = slider_option.get_state,
-    set_next_state = function()
+    get_state = function(_)
+      return slider_option.get_state()
+    end,
+    set_state = function(_, state)
+      slider_option.set_state(state)
+    end,
+    set_next_state = function(self)
       local current_index = get_current_index_or_warn()
       if not current_index then
-        return nil
+        return
       end
 
       if current_index == #slider_option.values then
-        return nil
+        return
       end
 
       local new_state = slider_option.values[current_index + 1]
-      slider_option.set_state(new_state)
-      return new_state
+      self:set_state(new_state)
     end,
-    set_prev_state = function()
+    set_prev_state = function(self)
       local current_index = get_current_index_or_warn()
       if not current_index then
-        return nil
+        return
       end
 
       if current_index == 1 then
-        return nil
+        return
       end
 
       local new_state = slider_option.values[current_index - 1]
-      slider_option.set_state(new_state)
-      return new_state
+      self:set_state(new_state)
     end,
-    toggle_state = function()
+    toggle_state = function(self)
       local current_index = get_current_index_or_warn()
       if not current_index then
-        return nil
+        return
       end
 
       local next_index
@@ -175,12 +187,11 @@ M.SliderOption = function(slider_option)
       end
 
       if next_index == nil then
-        return nil
+        return
       end
 
       local new_state = slider_option.values[next_index]
-      slider_option.set_state(new_state)
-      return new_state
+      self:set_state(new_state)
     end,
   }
 end
@@ -190,36 +201,37 @@ end
 
 --- An option decorator that notifies on option toggle actions.
 ---
----@param option Option
+---@generic T : Option
+---@param option T
 ---@param params? NotifyOnSetParams Optional parameters for the notification.
----@return Option
+---@return T
 M.NotifyOnSetOption = function(option, params)
   local notify = (params ~= nil and params.notify)
     or function(...)
       -- It’s important that we bind vim.notify dynamically, because it’s often monkey-patched.
       vim.notify(...)
     end
-  local wrap = function(f)
-    return function()
-      local new_state = f()
-      if new_state ~= nil then
-        notify(
-          "Set " .. option.name .. " to " .. M.show_option_state(new_state),
-          vim.log.levels.INFO,
-          { title = "Toggle.nvim" }
-        )
-      end
-      return new_state
+
+  local new_option = require("toggle.table-extra").shallow_copy(option)
+  new_option.set_state = function(_, desired_state)
+    ---@diagnostic disable-next-line: undefined-field
+    local old_state = option:get_state()
+    ---@diagnostic disable-next-line: undefined-field
+    option:set_state(desired_state)
+    ---@diagnostic disable-next-line: undefined-field
+    local new_state = option:get_state()
+    if new_state ~= old_state then
+      notify(
+        "Set " ---@diagnostic disable-next-line: undefined-field
+          .. option.name
+          .. " to "
+          .. M.show_option_state(new_state),
+        vim.log.levels.INFO,
+        { title = "Toggle.nvim" }
+      )
     end
   end
-
-  return {
-    name = option.name,
-    get_state = option.get_state,
-    set_next_state = wrap(option.set_next_state),
-    set_prev_state = wrap(option.set_prev_state),
-    toggle_state = wrap(option.toggle_state),
-  }
+  return new_option
 end
 
 return M

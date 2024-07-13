@@ -21,19 +21,25 @@ describe("toggle.option", function()
         end,
       })
 
-      assert.is.False(on_off_option.get_state())
-      assert.is.True(on_off_option.set_next_state())
+      assert.is.False(on_off_option:get_state())
+      on_off_option:set_next_state()
+      assert.is.True(on_off_option:get_state())
       assert.are.same(true, state)
-      assert.are.same(nil, on_off_option.set_next_state())
-      assert.are.same(true, state)
-      assert.are.same(false, on_off_option.set_prev_state())
-      assert.are.same(false, state)
-      assert.are.same(nil, on_off_option.set_prev_state())
-      assert.are.same(false, state)
-      assert.are.same(true, on_off_option.toggle_state())
-      assert.are.same(true, state)
-      assert.are.same(false, on_off_option.toggle_state())
-      assert.are.same(false, state)
+      on_off_option:set_next_state()
+      assert.is.True(on_off_option:get_state())
+      assert.is.True(state)
+      on_off_option:set_prev_state()
+      assert.is.False(on_off_option:get_state())
+      assert.is.False(state)
+      on_off_option:set_prev_state()
+      assert.is.False(on_off_option:get_state())
+      assert.is.False(state)
+      on_off_option:toggle_state()
+      assert.is.True(on_off_option:get_state())
+      assert.is.True(state)
+      on_off_option:toggle_state()
+      assert.is.False(on_off_option:get_state())
+      assert.is.False(state)
     end)
   end)
   describe("SliderOption", function()
@@ -51,24 +57,33 @@ describe("toggle.option", function()
         toggle_behavior = "cycle",
       })
 
-      assert.are.same(1, slider_option.get_state())
-      assert.are.same(2, slider_option.set_next_state())
+      assert.are.same(1, slider_option:get_state())
+      slider_option:set_next_state()
+      assert.are.same(2, slider_option:get_state())
       assert.are.same(2, state)
-      assert.are.same(3, slider_option.set_next_state())
+      slider_option:set_next_state()
+      assert.are.same(3, slider_option:get_state())
       assert.are.same(3, state)
-      assert.are.same(nil, slider_option.set_next_state())
+      slider_option:set_next_state()
+      assert.are.same(3, slider_option:get_state())
       assert.are.same(3, state)
-      assert.are.same(2, slider_option.set_prev_state())
+      slider_option:set_prev_state()
+      assert.are.same(2, slider_option:get_state())
       assert.are.same(2, state)
-      assert.are.same(1, slider_option.set_prev_state())
+      slider_option:set_prev_state()
+      assert.are.same(1, slider_option:get_state())
       assert.are.same(1, state)
-      assert.are.same(nil, slider_option.set_prev_state())
+      slider_option:set_prev_state()
+      assert.are.same(1, slider_option:get_state())
       assert.are.same(1, state)
-      assert.are.same(2, slider_option.toggle_state())
+      slider_option:toggle_state()
+      assert.are.same(2, slider_option:get_state())
       assert.are.same(2, state)
-      assert.are.same(3, slider_option.toggle_state())
+      slider_option:toggle_state()
+      assert.are.same(3, slider_option:get_state())
       assert.are.same(3, state)
-      assert.are.same(1, slider_option.toggle_state())
+      slider_option:toggle_state()
+      assert.are.same(1, slider_option:get_state())
       assert.are.same(1, state)
     end)
 
@@ -86,13 +101,17 @@ describe("toggle.option", function()
         toggle_behavior = "min",
       })
 
-      assert.are.same(1, slider_option.toggle_state())
+      slider_option:toggle_state()
+      assert.are.same(1, slider_option:get_state())
       assert.are.same(1, state)
-      assert.are.same(3, slider_option.toggle_state())
+      slider_option:toggle_state()
+      assert.are.same(3, slider_option:get_state())
       assert.are.same(3, state)
-      assert.are.same(1, slider_option.toggle_state())
+      slider_option:toggle_state()
+      assert.are.same(1, slider_option:get_state())
       assert.are.same(1, state)
-      assert.are.same(3, slider_option.toggle_state())
+      slider_option:toggle_state()
+      assert.are.same(3, slider_option:get_state())
       assert.are.same(3, state)
     end)
 
@@ -110,13 +129,17 @@ describe("toggle.option", function()
         toggle_behavior = "max",
       })
 
-      assert.are.same(4, slider_option.toggle_state())
+      slider_option:toggle_state()
+      assert.are.same(4, slider_option:get_state())
       assert.are.same(4, state)
-      assert.are.same(3, slider_option.toggle_state())
+      slider_option:toggle_state()
+      assert.are.same(3, slider_option:get_state())
       assert.are.same(3, state)
-      assert.are.same(4, slider_option.toggle_state())
+      slider_option:toggle_state()
+      assert.are.same(4, slider_option:get_state())
       assert.are.same(4, state)
-      assert.are.same(3, slider_option.toggle_state())
+      slider_option:toggle_state()
+      assert.are.same(3, slider_option:get_state())
       assert.are.same(3, state)
     end)
   end)
@@ -126,17 +149,11 @@ describe("toggle.option", function()
       local state = 1
       local option = {
         name = "test",
-        get_state = function()
-          return 1
+        get_state = function(_)
+          return state
         end,
-        set_next_state = function()
-          return 2
-        end,
-        set_prev_state = function()
-          return 1
-        end,
-        toggle_state = function()
-          return (2 - state) + 1
+        set_state = function(_, val)
+          state = val
         end,
       }
       local message = ""
@@ -146,28 +163,19 @@ describe("toggle.option", function()
         end,
       })
 
-      notify_on_set_option.set_next_state()
+      notify_on_set_option:set_state(2)
       assert.are.same(message, "Set test to 2")
-      notify_on_set_option.set_prev_state()
+      notify_on_set_option:set_state(1)
       assert.are.same(message, "Set test to 1")
-      notify_on_set_option.toggle_state()
-      assert.are.same(message, "Set test to 2")
     end)
+
     it("stays silent on no changes", function()
       local option = {
         name = "test",
-        get_state = function()
+        get_state = function(_)
           return 1
         end,
-        set_next_state = function()
-          return nil
-        end,
-        set_prev_state = function()
-          return nil
-        end,
-        toggle_state = function()
-          return nil
-        end,
+        set_state = function(_, _) end,
       }
       local message = ""
       local notify_on_set_option = option_m.NotifyOnSetOption(option, {
@@ -175,12 +183,32 @@ describe("toggle.option", function()
           message = msg
         end,
       })
-      notify_on_set_option.set_next_state()
+      notify_on_set_option:set_state(1)
       assert.are.same(message, "")
-      notify_on_set_option.set_prev_state()
-      assert.are.same(message, "")
-      notify_on_set_option.toggle_state()
-      assert.are.same(message, "")
+    end)
+
+    it("works with OnOffOption", function()
+      local state = false
+      local option = option_m.OnOffOption({
+        name = "test",
+        get_state = function()
+          return state
+        end,
+        set_state = function(val)
+          state = val
+        end,
+      })
+      local message = ""
+      local notify_on_set_option = option_m.NotifyOnSetOption(option, {
+        notify = function(msg)
+          message = msg
+        end,
+      })
+
+      notify_on_set_option:toggle_state()
+      assert.are.same(message, "Set test to ON")
+      notify_on_set_option:toggle_state()
+      assert.are.same(message, "Set test to OFF")
     end)
   end)
 end)

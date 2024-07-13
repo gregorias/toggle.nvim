@@ -28,7 +28,7 @@ M.show_dashboard = function(options)
   local option_m = require("toggle.option")
   local entries = vim.tbl_map(function(option)
     return {
-      [1] = option_m.show_option_state(option.get_state()),
+      [1] = option_m.show_option_state(option:get_state()),
       [2] = option.name,
       option = option,
     }

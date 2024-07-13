@@ -38,7 +38,7 @@ local global_config = default_config
 local setup_done = false
 
 --- A repository of all to-be-registered options.
----@type table<string, Option>
+---@type table<string, ToggleOption>
 local options_by_keymap_todo = {}
 
 M.option = option_m
@@ -49,7 +49,7 @@ M.option = option_m
 ---Registers a new option.
 ---
 ---@param keymap string
----@param option Option
+---@param option ToggleOption
 ---@param opts RegisterOpts?
 function M.register(keymap, option, opts)
   if not setup_done then
@@ -70,13 +70,13 @@ function M.register(keymap, option, opts)
   local keymap_registry = global_config.keymap_registry
   local keymaps = global_config.keymaps
   keymap_registry.register_keymap("n", keymaps.toggle_option_prefix .. keymap, function()
-    option.toggle_state()
+    option:toggle_state()
   end, { desc = "Toggle " .. option.name, buffer = opts and opts.buffer })
   keymap_registry.register_keymap("n", keymaps.previous_option_prefix .. keymap, function()
-    option.set_prev_state()
+    option:set_prev_state()
   end, { desc = "Set previous (off) state of " .. option.name, buffer = opts and opts.buffer })
   keymap_registry.register_keymap("n", keymaps.next_option_prefix .. keymap, function()
-    option.set_next_state()
+    option:set_next_state()
   end, { desc = "Set next (on) state of " .. option.name, buffer = opts and opts.buffer })
 end
 
