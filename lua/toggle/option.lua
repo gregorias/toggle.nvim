@@ -9,8 +9,8 @@ local M = {}
 ---
 ---@class Option
 ---@field name string A human-readable identifier for the option.
----@field get_state fun(self: Option): OptionState Returns the current state.
----@field set_state fun(self: Option, state: OptionState) Sets the option’s state to the given value.
+---@field get_state fun(self: Option): any Returns the current state.
+---@field set_state fun(self: Option, state: any) Sets the option’s state to the given value.
 
 --- An option that can acts as a toggle.
 ---
@@ -53,9 +53,9 @@ end
 
 ---@class EnumOptionParams
 ---@field name string A human-readable identifier for the option.
----@field states table<OptionState> An ordered list of possible values.
----@field get_state fun(): OptionState Returns the option’s current state.
----@field set_state fun(state: OptionState) Sets the option’s state to the given value.
+---@field states table<any> An ordered list of possible values.
+---@field get_state fun(): any Returns the option’s current state.
+---@field set_state fun(state: any) Sets the option’s state to the given value.
 ---@field toggle_behavior? "cycle" | "min" | "max" (default "cycle") The behavior when toggling.
 
 --- Creates a new enum option.
@@ -173,31 +173,16 @@ end
 ---@param on_off_option OnOffOption
 ---@return ToggleOption
 M.OnOffOption = function(on_off_option)
-  return {
+  return M.EnumOption({
     name = on_off_option.name,
-    get_state = function(_)
+    states = { false, true },
+    get_state = function()
       return on_off_option.get_state()
     end,
-    set_state = function(_, val)
+    set_state = function(val)
       on_off_option.set_state(val)
     end,
-    set_next_state = function(self)
-      if not self:get_state() then
-        local new_state = true
-        self:set_state(new_state)
-      end
-    end,
-    set_prev_state = function(self)
-      if self:get_state() then
-        local new_state = false
-        self:set_state(new_state)
-      end
-    end,
-    toggle_state = function(self)
-      local new_state = not on_off_option.get_state()
-      self:set_state(new_state)
-    end,
-  }
+  })
 end
 
 ---@class NotifyOnSetParams
