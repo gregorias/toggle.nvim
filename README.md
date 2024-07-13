@@ -24,6 +24,10 @@ something about your editing session. Consider the following scenarios:
 
 If any of the above happen to you, then Toggle is worth a try!
 
+## Example session
+
+![tty](assets/toggle-session.gif)
+
 ## ⚡️ Requirements
 
 - Neovim 0.10+
