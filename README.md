@@ -94,6 +94,35 @@ All default options use `vim.notify` for state changes.
 | relativenumber | `r`    | on-off switch for `relativenumber`     |
 | wrap           | `w`    | on-off switch for `wrap`               |
 
+### Adding an option
+
+You can define and add new options using the `register` function. For example,
+below is a snippet that registers an inlay hint buffer-local option with
+notifications:
+
+```lua
+-- This snippet happens in the context of an LSP attach event after checking
+-- that the language server supports inlay hints.
+local bufnr = … -- the current buffer
+local toggle = require"toggle"
+toggle.register(
+  "i",
+  -- Disables or enables inlay hints for the current buffer.
+  toggle.option.NotifyOnSetOption(toggle.option.OnOffOption({
+    name = "inlay hints",
+    get_state = function()
+      return vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
+    end,
+    set_state = function(new_value)
+      vim.lsp.inlay_hint.enable(new_value, { bufnr = bufnr })
+    end,
+  })),
+  { buffer = bufnr }
+)
+```
+
+For more examples, see `default-options.lua`.
+
 ## ✅ Comparison to Unimpaired
 
 [Unimpaired][unimpaired] has more scope than Toggle, but it’s less extensible.
