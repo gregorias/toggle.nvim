@@ -43,6 +43,9 @@ M.show_dashboard = function(options)
       return format_option(entry, column_widths)
     end,
   }, function(choice)
+    if choice == nil then
+      return
+    end
     M.show_option_state_select(choice.option)
   end)
 end
