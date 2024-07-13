@@ -8,6 +8,7 @@ local default_options_m = require("toggle.default-options")
 ---@field keymaps table
 ---@field keymap_registry KeymapRegistry A keymap registry.
 ---@field options_by_keymap table<string, Option> A table of initial options to register keyed by their keymap.
+---@field notify_on_set_default_option boolean Whether to send set notifications with default options.
 
 --- Like ToggleConfig but with optional fields.
 ---@class UserToggleConfig
@@ -15,6 +16,7 @@ local default_options_m = require("toggle.default-options")
 ---@field keymap_registry? KeymapRegistry? A keymap registry.
 ---@field options_by_keymap table<string, EnumOption>? A table of options to register keyed by their keymap.
 ---                                                    If nil, the default options will be used.
+---@field notify_on_set_default_option boolean? Whether to send set notifications with default options.
 
 ---@type ToggleConfig
 local default_config = {
@@ -26,16 +28,17 @@ local default_config = {
   },
   keymap_registry = require("toggle.keymap").keymap_registry(),
   options_by_keymap = {
-    b = option_m.NotifyOnSetOption(default_options_m.background_option),
-    cl = option_m.NotifyOnSetOption(default_options_m.conceallevel_option),
-    d = option_m.NotifyOnSetOption(default_options_m.diff_option),
-    D = option_m.NotifyOnSetOption(default_options_m.diff_all_option),
-    l = option_m.NotifyOnSetOption(default_options_m.list_option),
-    n = option_m.NotifyOnSetOption(default_options_m.number_option),
-    r = option_m.NotifyOnSetOption(default_options_m.relativenumber_option),
-    w = option_m.NotifyOnSetOption(default_options_m.wrap_option),
-    ["-"] = option_m.NotifyOnSetOption(default_options_m.cursorline_option),
+    b = default_options_m.background_option,
+    cl = default_options_m.conceallevel_option,
+    d = default_options_m.diff_option,
+    D = default_options_m.diff_all_option,
+    l = default_options_m.list_option,
+    n = default_options_m.number_option,
+    r = default_options_m.relativenumber_option,
+    w = default_options_m.wrap_option,
+    ["-"] = default_options_m.cursorline_option,
   },
+  notify_on_set_default_option = true,
 }
 
 ---@type ToggleConfig
@@ -100,8 +103,17 @@ M.setup = function(config)
     "+Previous option"
   )
 
-  ---@diagnostic disable-next-line: param-type-mismatch
+  local default_options = {}
   for keymap, option in pairs(global_config.options_by_keymap) do
+    if global_config.notify_on_set_default_option then
+      default_options[keymap] = option_m.NotifyOnSetOption(option)
+    else
+      default_options[keymap] = option
+    end
+  end
+
+  ---@diagnostic disable-next-line: param-type-mismatch
+  for keymap, option in pairs(default_options) do
     M.register(keymap, option)
   end
   for keymap, option in pairs(options_by_keymap_todo) do

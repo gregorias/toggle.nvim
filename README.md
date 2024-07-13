@@ -73,6 +73,8 @@ require"toggle".setup{
   keymap_registry = require("toggle.keymap").keymap_registry(),
   -- See the default options section below.
   options_by_keymap = …,
+  --- Whether to notify when a default option is set.
+  notify_on_set_default_option = true,
 }
 ```
 
