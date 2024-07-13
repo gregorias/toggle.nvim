@@ -11,12 +11,10 @@
 </div>
 
 Toggle is a modern, extensible Neovim Lua plugin for toggling options ala
-[unimpaired.vim][unimpaired].
+[unimpaired.vim][unimpaired]. The main use-case is to be able to quickly change
+something about your editing session. Consider the following scenarios:
 
-Do you have togglable options that you ocassionally want to change during your
-Neovim session? For example:
-
-- You usually have `nowrap` on, but sometimes you need to turn on wrapping for
+- You usually have `nowrap` on, but sometimes you need to turn on `wrap`ping for
   those long lines to see what’s going on.
 - You want to quickly diff two buffers by setting `diffthis` on them.
 - Completion turns out to be useless for the current buffer, so you want to
@@ -24,7 +22,7 @@ Neovim session? For example:
 - You usually work with `conceallevel`, but you need to decrease it from time
   to time to double check your Markdown.
 
-Then Toggle is a plugin for you!
+If any of the above happen to you, then Toggle is worth a try!
 
 ## ⚡️ Requirements
 
@@ -99,7 +97,8 @@ All default options use `vim.notify` for state changes.
 The idea of quickly toggling options using `yo`, `[o` `]o` came from
 [unimpaired.vim][unimpaired].
 
-The toggle SVG is a modified icon from [Arthur Shlain](https://usefulicons.com/).
+The toggle SVG is a modified toggle icon from
+[Arthur Shlain](https://usefulicons.com/).
 
 ## 🔗 See also
 
