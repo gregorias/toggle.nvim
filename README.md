@@ -40,7 +40,7 @@ Install the plugin with your preferred package manager, such as [Lazy]:
 
 ```lua
 {
-  "gregorias/toggle.nvim",
+  [1] = "gregorias/toggle.nvim",
   config = true,
 }
 ```
