@@ -101,6 +101,10 @@ The idea of quickly toggling options using `yo`, `[o` `]o` came from
 
 The toggle SVG is a modified icon from [Arthur Shlain](https://usefulicons.com/).
 
+## 🔗 See also
+
+- [Coerce](https://github.com/gregorias/coerce.nvim) — My Neovim plugin for case coercion.
+
 [Lazy]: https://github.com/folke/lazy.nvim
 [nvim-notify]: https://github.com/rcarriga/nvim-notify
 [unimpaired]: https://github.com/tpope/vim-unimpaired
