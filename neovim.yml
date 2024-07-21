@@ -4,6 +4,9 @@ base: lua51
 globals:
   vim:
     any: true
+  after_each:
+    args:
+      - type: function
   assert:
     args:
       - type: bool
@@ -33,9 +36,6 @@ globals:
   assert.is.True:
     args:
       - type: bool
-  after_each:
-    args:
-      - type: function
   before_each:
     args:
       - type: function
