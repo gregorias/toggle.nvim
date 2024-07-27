@@ -12,7 +12,7 @@ local M = {}
 ---@field get_state fun(self: Option): any Returns the current state.
 ---@field set_state fun(self: Option, state: any) Sets the option’s state to the given value.
 
---- An option that can acts as a toggle.
+--- An option that can act as a toggle.
 ---
 --- A toggle has esentially three affordances: toggling, moving to the next or on state, and moving to the previous or
 --- off state.
