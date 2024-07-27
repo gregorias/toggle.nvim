@@ -33,7 +33,7 @@ local M = {}
 ---
 --- This function is meant to provide a uniform way of showing an option state.
 ---
----@param state number|boolean|string
+---@param state OptionState
 ---@return string
 M.show_option_state = function(state)
   local state_str = ""
@@ -163,14 +163,15 @@ M.EnumOption = function(params)
 end
 
 --- An option that can be toggled on and off.
----@class OnOffOption
+---
+---@class OnOffOptionParams
 ---@field name string A human-readable identifier for the option.
 ---@field get_state fun(): boolean Returns the option’s current state.
 ---@field set_state fun(state: boolean) Sets the option’s state to the given value.
 
 --- Creates a new on-off option.
 ---
----@param on_off_option OnOffOption
+---@param on_off_option OnOffOptionParams
 ---@return EnumOption
 M.OnOffOption = function(on_off_option)
   return M.EnumOption({
