@@ -27,6 +27,7 @@ If any of the above happen to you, then Toggle is worth a try!
 ## Example session
 
 ![tty](assets/toggle-session.gif)
+![Which Key integration](assets/toggle-which-key.webp)
 
 ## ⚡️ Requirements
 
