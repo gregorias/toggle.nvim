@@ -8,6 +8,7 @@ describe("toggle.option", function()
       assert.are.same("foo", option_m.show_option_state("foo"))
     end)
   end)
+
   describe("OnOffOption", function()
     it("behaves like an on-off option", function()
       local state = false
@@ -41,7 +42,36 @@ describe("toggle.option", function()
       assert.is.False(on_off_option:get_state())
       assert.is.False(state)
     end)
+    it("gives intuitive keymap hints", function()
+      local state = false
+      local on_off_option = option_m.OnOffOption({
+        name = "test",
+        get_state = function()
+          return state
+        end,
+        set_state = function(new_state)
+          state = new_state
+        end,
+      })
+
+      assert.are.same("Toggle test", on_off_option.toggle_ui.toggle_state_ui.desc)
+      assert.are.same("Turn on test", on_off_option.toggle_ui.toggle_state_ui.desc_fn())
+      assert.are.same(option_m.icon_on, on_off_option.toggle_ui.toggle_state_ui.icon_fn())
+      assert.are.same("Turn on test", on_off_option.toggle_ui.set_next_state_ui.desc)
+      assert.are.same(option_m.icon_on, on_off_option.toggle_ui.set_next_state_ui.icon)
+      assert.are.same("Turn off test", on_off_option.toggle_ui.set_prev_state_ui.desc)
+      assert.are.same(option_m.icon_off, on_off_option.toggle_ui.set_prev_state_ui.icon)
+      state = true
+      assert.are.same("Toggle test", on_off_option.toggle_ui.toggle_state_ui.desc)
+      assert.are.same("Turn off test", on_off_option.toggle_ui.toggle_state_ui.desc_fn())
+      assert.are.same(option_m.icon_off, on_off_option.toggle_ui.toggle_state_ui.icon_fn())
+      assert.are.same("Turn on test", on_off_option.toggle_ui.set_next_state_ui.desc)
+      assert.are.same(option_m.icon_on, on_off_option.toggle_ui.set_next_state_ui.icon)
+      assert.are.same("Turn off test", on_off_option.toggle_ui.set_prev_state_ui.desc)
+      assert.are.same(option_m.icon_off, on_off_option.toggle_ui.set_prev_state_ui.icon)
+    end)
   end)
+
   describe("EnumOption", function()
     it("behaves like a cycle slider option", function()
       local state = 1

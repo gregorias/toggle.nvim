@@ -16,6 +16,29 @@ M.background_option = option.EnumOption({
   set_state = function(state)
     vim.o.background = state
   end,
+  toggle_ui = {
+    set_next_state_ui = {
+      desc = "Set light background",
+      icon = {
+        icon = "",
+        color = "yellow",
+      },
+    },
+    set_prev_state_ui = {
+      desc = "Set dark background",
+      icon = {
+        icon = "",
+        color = "blue",
+      },
+    },
+    toggle_state_ui = {
+      desc = "Toggle background",
+      icon = {
+        icon = "󰔎",
+        color = "yellow",
+      },
+    },
+  },
 })
 
 ---@type EnumOption
@@ -29,6 +52,16 @@ M.conceallevel_option = option.EnumOption({
     vim.o.conceallevel = state
   end,
   toggle_behavior = "min",
+  ---@diagnostic disable-next-line: missing-fields
+  toggle_ui = {
+    toggle_state_ui = {
+      desc = "Toggle conceallevel",
+      icon = {
+        icon = "󰎠",
+        color = "yellow",
+      },
+    },
+  },
 })
 
 ---@type EnumOption
@@ -131,6 +164,42 @@ M.diff_all_option = {
       self:set_state(diff_all_option_on)
     end
   end,
+  toggle_ui = {
+    toggle_state_ui = {
+      desc = "Toggle diff all",
+      desc_fn = function()
+        local current_state = get_diff_all_state()
+        if current_state == diff_all_option_none then
+          return "Toggle diff all"
+        end
+        if current_state == diff_all_option_on then
+          return "Undiff all"
+        else
+          return "Diff all"
+        end
+      end,
+      icon = "",
+      icon_fn = function()
+        local current_state = get_diff_all_state()
+        if current_state == diff_all_option_none then
+          return "󰔎"
+        end
+        if current_state == diff_all_option_on then
+          return option.icon_off
+        else
+          return option.icon_on
+        end
+      end,
+    },
+    set_prev_state_ui = {
+      desc = "Undiff all",
+      icon = option.icon_off,
+    },
+    set_next_state_ui = {
+      desc = "Diff all",
+      icon = option.icon_on,
+    },
+  },
 }
 
 ---@type EnumOption

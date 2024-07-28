@@ -79,13 +79,28 @@ function M.register(keymap, option, opts)
   local keymaps = global_config.keymaps
   keymap_registry.register_keymap("n", keymaps.toggle_option_prefix .. keymap, function()
     option:toggle_state()
-  end, { desc = "Toggle " .. option.name, buffer = opts and opts.buffer })
+  end, {
+    desc = option.toggle_ui.toggle_state_ui.desc,
+    desc_fn = option.toggle_ui.toggle_state_ui.desc_fn,
+    icon = option.toggle_ui.toggle_state_ui.icon_fn or option.toggle_ui.toggle_state_ui.icon,
+    buffer = opts and opts.buffer,
+  })
   keymap_registry.register_keymap("n", keymaps.previous_option_prefix .. keymap, function()
     option:set_prev_state()
-  end, { desc = "Set previous (off) state of " .. option.name, buffer = opts and opts.buffer })
+  end, {
+    desc = option.toggle_ui.set_prev_state_ui.desc,
+    desc_fn = option.toggle_ui.set_prev_state_ui.desc_fn,
+    icon = option.toggle_ui.set_prev_state_ui.icon_fn or option.toggle_ui.set_prev_state_ui.icon,
+    buffer = opts and opts.buffer,
+  })
   keymap_registry.register_keymap("n", keymaps.next_option_prefix .. keymap, function()
     option:set_next_state()
-  end, { desc = "Set next (on) state of " .. option.name, buffer = opts and opts.buffer })
+  end, {
+    desc = option.toggle_ui.set_next_state_ui.desc,
+    desc_fn = option.toggle_ui.set_next_state_ui.desc_fn,
+    icon = option.toggle_ui.set_next_state_ui.icon_fn or option.toggle_ui.set_next_state_ui.icon,
+    buffer = opts and opts.buffer,
+  })
 end
 
 ---@param config ToggleConfig?
@@ -125,7 +140,10 @@ M.setup = function(config)
     global_config.keymap_registry.register_keymap("n", global_config.keymaps.status_dashboard, function()
       local options = require("toggle.dashboard").get_options_for_dashboard()
       require("toggle.dashboard").show_dashboard(options)
-    end, { desc = "Show Toggle status dashboard" })
+    end, { desc = "Show Toggle status dashboard", icon = {
+      icon = "",
+      color = "yellow",
+    } })
   end
 end
 

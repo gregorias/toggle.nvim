@@ -15,6 +15,8 @@ M.plain_keymap_registry = {
     return nil
   end,
   register_keymap = function(mode, keymap, action, opts)
+    opts.icon = nil
+    opts.desc_fn = nil
     vim.keymap.set(mode, keymap, action, opts)
   end,
 }
@@ -39,7 +41,8 @@ M.which_key_keymap_registry = {
       {
         [1] = keymap,
         [2] = action,
-        desc = opts.desc,
+        desc = opts.desc_fn or opts.desc,
+        icon = opts.icon,
         mode = mode,
         buffer = opts.buffer,
       },

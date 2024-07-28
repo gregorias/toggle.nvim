@@ -12,6 +12,42 @@ local M = {}
 ---@field get_state fun(self: Option): any Returns the current state.
 ---@field set_state fun(self: Option, state: any) Sets the option’s state to the given value.
 
+---@class KeymapUI
+---@field desc     string        A description of the keymap.
+---@field desc_fn? fun(): string A dynamic description of the keymap.
+---@field icon     any           A static icon for the keymap.
+---@field icon_fn? fun(): any    A dynamic icon for the keymap.
+
+M.icon_off = {
+  icon = "",
+  color = "red",
+}
+
+M.icon_on = {
+  icon = "",
+  color = "green",
+}
+
+---@class ToggleOptionUI
+---@field set_next_state_ui KeymapUI UI metadata for the set next state action.
+---@field set_prev_state_ui KeymapUI UI metadata for the set prev state action.
+---@field toggle_state_ui   KeymapUI UI metadata for the toggle state action.
+
+M.empty_toggle_option_ui = {
+  set_next_state_ui = {
+    desc = "",
+    icon = "",
+  },
+  set_prev_state_ui = {
+    desc = "",
+    icon = "",
+  },
+  toggle_state_ui = {
+    desc = "",
+    icon = "",
+  },
+}
+
 --- An option that can act as a toggle.
 ---
 --- A toggle has esentially three affordances: toggling, moving to the next or on state, and moving to the previous or
@@ -21,6 +57,7 @@ local M = {}
 ---@field set_next_state fun(self: ToggleOption) Sets the next state.
 ---@field set_prev_state fun(self: ToggleOption) Sets the previous state.
 ---@field toggle_state fun(self: ToggleOption) Toggles the state.
+---@field toggle_ui ToggleOptionUI UI metadata for the toggle.
 
 --- An enum option is an option which states can be enumerated upon.
 ---
@@ -57,6 +94,7 @@ end
 ---@field get_state fun(): any Returns the option’s current state.
 ---@field set_state fun(state: any) Sets the option’s state to the given value.
 ---@field toggle_behavior? "cycle" | "min" | "max" (default "cycle") The behavior when toggling.
+---@field toggle_ui? ToggleOptionUI UI metadata for the toggle.
 
 --- Creates a new enum option.
 ---
@@ -87,6 +125,23 @@ M.EnumOption = function(params)
     end
     return current_index
   end
+
+  local default_toggle_ui = {
+    set_next_state_ui = {
+      desc = "Set next state of " .. params.name,
+      icon = "",
+    },
+    set_prev_state_ui = {
+      desc = "Set previous state of " .. params.name,
+      icon = "",
+    },
+    toggle_state_ui = {
+      desc = "Toggle " .. params.name,
+      icon = "",
+    },
+  }
+
+  local toggle_ui = vim.tbl_deep_extend("force", default_toggle_ui, params.toggle_ui or {})
 
   local index_before_toggle = get_current_index()
 
@@ -159,6 +214,7 @@ M.EnumOption = function(params)
       local new_state = params.states[next_index]
       self:set_state(new_state)
     end,
+    toggle_ui = toggle_ui,
   }
 end
 
@@ -174,6 +230,14 @@ end
 ---@param on_off_option OnOffOptionParams
 ---@return EnumOption
 M.OnOffOption = function(on_off_option)
+  local icon_fn = function()
+    if on_off_option.get_state() then
+      return M.icon_off
+    else
+      return M.icon_on
+    end
+  end
+
   return M.EnumOption({
     name = on_off_option.name,
     states = { false, true },
@@ -183,6 +247,28 @@ M.OnOffOption = function(on_off_option)
     set_state = function(val)
       on_off_option.set_state(val)
     end,
+    toggle_ui = {
+      set_next_state_ui = {
+        desc = "Turn on " .. on_off_option.name,
+        icon = M.icon_on,
+      },
+      set_prev_state_ui = {
+        desc = "Turn off " .. on_off_option.name,
+        icon = M.icon_off,
+      },
+      toggle_state_ui = {
+        desc = "Toggle " .. on_off_option.name,
+        desc_fn = function()
+          if on_off_option.get_state() then
+            return "Turn off " .. on_off_option.name
+          else
+            return "Turn on " .. on_off_option.name
+          end
+        end,
+        icon = M.icon_on,
+        icon_fn = icon_fn,
+      },
+    },
   })
 end
 

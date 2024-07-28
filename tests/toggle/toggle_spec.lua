@@ -1,5 +1,6 @@
 local test_helpers = require("tests.helpers")
 local toggle = require("toggle")
+local option = require("toggle.option")
 
 describe("toggle", function()
   describe("setup", function()
@@ -20,6 +21,7 @@ describe("toggle", function()
           test_var = 1 - test_var
           return test_var
         end,
+        toggle_ui = option.empty_toggle_option_ui,
       }, { buffer = true })
 
       -- Toggle test. Execute immediately and use remapping.
@@ -45,6 +47,7 @@ describe("toggle", function()
           test_var = 1 - test_var
           return test_var
         end,
+        toggle_ui = option.empty_toggle_option_ui,
       }, { buffer = true })
 
       -- Toggle test. Execute immediately and use remapping.
@@ -73,6 +76,7 @@ describe("toggle", function()
         toggle_state = function()
           return nil
         end,
+        toggle_ui = option.empty_toggle_option_ui,
       }, { buffer = hi_bufnr })
 
       local option_registry = require("toggle.option-registry")
