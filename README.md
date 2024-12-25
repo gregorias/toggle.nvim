@@ -147,6 +147,7 @@ The toggle SVG is a modified toggle icon from
 
 ## 🔗 See also
 
+- [Coop](https://github.com/gregorias/coop.nvim) — My Neovim plugin for structured concurrency with coroutines.
 - [Coerce](https://github.com/gregorias/coerce.nvim) — My Neovim plugin for case coercion.
 
 [Lazy]: https://github.com/folke/lazy.nvim
